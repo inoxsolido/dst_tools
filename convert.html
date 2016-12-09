@@ -1,0 +1,48 @@
+﻿<html>
+<head>
+<script>
+	
+	function mo_to_ds(){
+		var txtarea_mo = document.getElementById('txtarea_mo');
+		var txtarea_ds = document.getElementById('txtarea_ds');
+		var str_mo = txtarea_mo.value;
+		
+		var reg = /workshop-\d{9}/gi;
+		
+		var matched_list = str_mo.match(reg);
+		if(matched_list)
+			for(var i in matched_list){
+				var m = matched_list[i];
+				txtarea_ds.value += "ServerModSetup("+m.replace('workshop-','')+")\n";
+			}
+	}
+	
+	function onFileChange() {
+		var file = document.getElementById('file').files[0];
+		var reader = new FileReader();
+			reader.onload = function (e) {
+				var textArea = document.getElementById("txtarea_mo");
+				textArea.value = e.target.result;
+				mo_to_ds();
+			};
+		reader.readAsText(file);
+		
+	}
+	
+	function copyToClipboard(){
+		document.getElementById("txtarea_ds").select();
+		document.execCommand("copy");
+	}
+</script>
+</head>
+<body>
+	<label>ModOverride.lua</label>&nbsp;&nbsp;<input id='file' type='file' onchange="onFileChange()"/>
+	<button id="convert" onclick="mo_to_ds()">convert to dedicated mod setup.lua</button><br/>
+	<textarea id="txtarea_mo" style="width:100%;height:40%;"></textarea>
+	<br/>
+	<hr/>
+	<h3>Dedicated mod setup.lua <button onclick="copyToClipboard()">Copy</button></h3>
+	<textarea id="txtarea_ds" style="width:100%;height:40%;"></textarea>
+	
+</body>
+</html>
